@@ -1,0 +1,30 @@
+{
+  "name": "win32-service",
+  "version": "0.0.1",
+  "description": "Minimal bindings to run Node.JS as a Windows service",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "configure": "node-gyp configure",
+    "build": "node-gyp build && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "windows",
+    "win32",
+    "service"
+  ],
+  "author": "Mika Fischer <mika.fischer@zoopnet.de> (https://github.com/mika-fischer)",
+  "license": "ISC",
+  "homepage": "https://github.com/mika-fischer/win32-service",
+  "bugs": "https://github.com/mika-fischer/win32-service/issues",
+  "repository": "github:mika-fischer/win32-service",
+  "dependencies": {
+    "napi-thread-safe-callback": "0.0.2",
+    "node-addon-api": "^0.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.26",
+    "typescript": "^2.5.2"
+  }
+}
