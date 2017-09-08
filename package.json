@@ -5,8 +5,10 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "configure": "node-gyp configure",
-    "build": "node-gyp build && tsc",
+    "configure": "node scripts/node-gyp-wrap.js configure",
+    "build": "tsc && node scripts/node-gyp-wrap.js build",
+    "rebuild": "tsc && node scripts/node-gyp-wrap.js rebuild",
+    "install": "node scripts/node-gyp-wrap.js rebuild",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

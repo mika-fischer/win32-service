@@ -1,4 +1,4 @@
-const _service = require('./build/Release/service');
+const _service = process.platform === 'win32' ? require('./build/Release/service') : {};
 
 export enum Type {
     KERNEL_DRIVER       = 0x001,
@@ -125,6 +125,16 @@ function bitmask(vals: number[]): number {
     return mask;
 }
 
+function platformError(): string {
+    return `Only win32 platform supported, not ${process.platform}`;
+}
+
+function assertWindows(): void {
+    if (process.platform !== 'win32') {
+        throw new Error(platformError());
+    }
+}
+
 /** List names of registered services
  * 
  * @param type  Filter for service type (@see TypeFilter)
@@ -133,6 +143,7 @@ function bitmask(vals: number[]): number {
 export function names(typeFilter: TypeFilter|TypeFilter[] = TypeFilter.ALL,
                       stateFilter: StateFilter = StateFilter.ALL): string[]
 {
+    assertWindows();
     typeFilter = Array.isArray(typeFilter) ? bitmask(typeFilter) : typeFilter;
     return _service.names(typeFilter, stateFilter);
 }
@@ -146,6 +157,7 @@ export type EnumerateResult = {[index: string]: ServiceStatus & {displayName?: s
 export function enumerate(typeFilter: TypeFilter|TypeFilter[] = TypeFilter.ALL,
                           stateFilter: StateFilter = StateFilter.ALL): EnumerateResult
 {
+    assertWindows();
     typeFilter = Array.isArray(typeFilter) ? bitmask(typeFilter) : typeFilter;
     return _service.enumerate(typeFilter, stateFilter);
 }
@@ -154,6 +166,7 @@ export function enumerate(typeFilter: TypeFilter|TypeFilter[] = TypeFilter.ALL,
  * @param name Name of service
  */
 export function config(name: string): ServiceConfigDisplay {
+    assertWindows();
     return _service.config(name);
 }
 
@@ -161,6 +174,7 @@ export function config(name: string): ServiceConfigDisplay {
  * @param name Name of service
  */
 export function status(name: string): ServiceStatus {
+    assertWindows();
     return _service.status(name);
 }
 
@@ -170,6 +184,7 @@ export function status(name: string): ServiceStatus {
 export function start(name: string): Promise<void> {
     return new Promise((resolve, reject) => {
         try {
+            assertWindows();
             _service.start(name, (err?: Error) => {
                 if (err) {
                     reject(err);
@@ -189,6 +204,7 @@ export function start(name: string): Promise<void> {
 export function stop(name: string) {
     return new Promise((resolve, reject) => {
         try {
+            assertWindows();
             _service.stop(name, (err?: Error) => {
                 if (err) {
                     reject(err);
@@ -207,6 +223,7 @@ export function stop(name: string) {
  * @param startType Desired start type for service
  */
 export function enable(name: string, startType: StartType = StartType.AUTO_START) {
+    assertWindows();
     return _service.change(name, {startType});
 }
 
@@ -214,6 +231,7 @@ export function enable(name: string, startType: StartType = StartType.AUTO_START
  * @param name Name of service to disable
  */
 export function disable(name: string): void {
+    assertWindows();
     return _service.change(name, {startType: StartType.DISABLED});
 }
 
@@ -222,6 +240,7 @@ export function disable(name: string): void {
  * @param config Configuration of service
  */
 export function create(name: string, config: ServiceConfigCreateOptions) {
+    assertWindows();
     return _service.create(name, {
         ...config,
         serviceType:  bitmask(config.serviceType || [Type.WIN32_OWN_PROCESS]),
@@ -235,6 +254,7 @@ export function create(name: string, config: ServiceConfigCreateOptions) {
  * @param config Configuration of service
  */
 export function change(name: string, config: ServiceConfigChangeOptions) {
+    assertWindows();
     return _service.change(name, {
         ...config,
         serviceType: config.serviceType ? bitmask(config.serviceType) : undefined,
@@ -245,6 +265,7 @@ export function change(name: string, config: ServiceConfigChangeOptions) {
  * @param name Name of service to remove
  */
 export function remove(name: string): void {
+    assertWindows();
     _service.remove(name);
 }
 
@@ -265,13 +286,21 @@ export function run(name: string,
                     initCallback?: (...args: any[]) => any,
                     stopCallback: () => any = defaultStopCallback): Promise<any[]|undefined> {
     return new Promise((resolve, reject) => {
-        _service.run(name, (err?: Error, ...args: any[]) => {
-            if (!err && initCallback) {
-                initCallback(...args);
-            } else if (err && !ignoreError) {
-                return reject(err);
+        if (process.platform === 'win32') {
+            _service.run(name, (err?: Error, ...args: any[]) => {
+                if (!err && initCallback) {
+                    initCallback(...args);
+                } else if (err && !ignoreError) {
+                    return reject(err);
+                }
+                resolve(err ? undefined : args);
+            }, stopCallback);
+        } else {
+            if (ignoreError) {
+                resolve();
+            } else {
+                reject(platformError());
             }
-            resolve(err ? undefined : args);
-        }, stopCallback);
+        }
     })
 }
