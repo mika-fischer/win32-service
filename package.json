@@ -22,8 +22,8 @@
   "bugs": "https://github.com/mika-fischer/win32-service/issues",
   "repository": "github:mika-fischer/win32-service",
   "dependencies": {
-    "napi-thread-safe-callback": "0.0.2",
-    "node-addon-api": "^0.6.3"
+    "napi-thread-safe-callback": "0.0.3",
+    "node-addon-api": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^8.0.26",

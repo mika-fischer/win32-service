@@ -2,7 +2,7 @@
 #include "service-control.hpp"
 #include <iostream>
 
-void init(Napi::Env env, Napi::Object exports, Napi::Object module) {
+Napi::Object init(Napi::Env env, Napi::Object exports) {
     // service-control
     exports["names"]     = Napi::Function::New(env, sc_names);
 
@@ -19,6 +19,8 @@ void init(Napi::Env env, Napi::Object exports, Napi::Object module) {
 
     // service
     exports["run"]       = Napi::Function::New(env, run);
+
+    return exports;
 }
 
 NODE_API_MODULE(service, init);
