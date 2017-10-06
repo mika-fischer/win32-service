@@ -67,19 +67,23 @@ async function run() {
     }
     console.error = console.log;
 
-    // for (const sig of ['SIGTERM', 'SIGINT', 'SIGHUP', 'SIGBREAK']) {
-    //     process.on(sig, () => {
-    //         console.log('Received signal', sig);
-    //         setTimeout(() => {
-    //             console.log('Node not exiting by itself after 10000 ms, exiting forcefully');
-    //             setImmediate(() => process.exit(0));
-    //         }, 10000).unref();
-    //     });
-    // }
-
     console.log('Trying to run as service');
     const args = await service.run(name);
     console.log('Args:', args);
+
+    const interval = setInterval(() => console.log('Still running'), 30000);
+    for (const sig of ['SIGTERM', 'SIGINT', 'SIGHUP', 'SIGBREAK']) {
+        process.on(sig, () => {
+            clearInterval(interval);
+            console.log('Received signal', sig);
+            console.log('Shutting down');
+            setTimeout(() => {
+                console.log('Node not exiting by itself after 10000 ms, exiting forcefully');
+                setImmediate(() => process.exit(0));
+            }, 10000).unref();
+        });
+    }
+
 }
 
 async function main() {

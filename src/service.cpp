@@ -19,7 +19,10 @@ namespace {
               name_(get_name(env_, info[0])),
               init_callback_(new ThreadSafeCallback(info[1].As<Napi::Function>())),
               stop_callback_(new ThreadSafeCallback(info[2].As<Napi::Function>()))
-            {}
+            {
+                init_callback_->unref();
+                stop_callback_->unref();
+            }
 
             const std::wstring& name() { return name_; }
 
