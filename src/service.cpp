@@ -20,7 +20,6 @@ namespace {
               init_callback_(new ThreadSafeCallback(info[1].As<Napi::Function>())),
               stop_callback_(new ThreadSafeCallback(info[2].As<Napi::Function>()))
             {
-                init_callback_->unref();
                 stop_callback_->unref();
             }
 
@@ -96,12 +95,14 @@ namespace {
             for (DWORD i=0; i<argc; ++i)
                 args.push_back(Napi::String::New(env, converter.to_bytes(argv[i])));
         }).get();
-        init_callback_.reset();
 
         // The Service Control Manager (SCM) waits until the service reports a status of
         // SERVICE_RUNNING. It is recommended that the service reports this status as quickly
         // as possible...
         set_status(SERVICE_RUNNING, NO_ERROR, 0);
+
+        // Release init_callback_ so that it does not keep the Node.js event loop alive
+        init_callback_.reset();
     }
 
     DWORD ServiceInstance::handler(DWORD control, DWORD event_type, void *event_data) {
