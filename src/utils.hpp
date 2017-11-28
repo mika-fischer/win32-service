@@ -15,6 +15,7 @@ using SC_HANDLE_ptr     = std::unique_ptr<SC_HANDLE_pointee, SC_HANDLE_closer>;
 extern std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 std::wstring get_name(const Napi::Env& env, const Napi::Value& val);
+std::wstring array_to_double_null_string(const Napi::Env& env, const Napi::Array& array);
 std::string error_message(const char* prefix);
 SC_HANDLE_ptr get_manager(const Napi::Env& env, DWORD access);
 SC_HANDLE_ptr get_service(const Napi::Env& env, SC_HANDLE manager, const wchar_t* name, DWORD access);

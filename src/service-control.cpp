@@ -204,7 +204,9 @@ void sc_change(Napi::CallbackInfo& info) {
             nullptr :
             get_name(env, config["loadOrderGroup"]).c_str(),
         nullptr, // tag ID
-        nullptr,               // dependencies
+        config["dependencies"].IsUndefined() ?
+            nullptr :
+            array_to_double_null_string(env, config["dependencies"].As<Napi::Array>()).c_str(),
         config["serviceStartName"].IsUndefined() ?
             nullptr :
             get_name(env, config["serviceStartName"]).c_str(),
@@ -216,6 +218,13 @@ void sc_change(Napi::CallbackInfo& info) {
             get_name(env, config["displayName"]).c_str()
     ))
         throw Napi::Error::New(env, error_message("ChangeServiceConfig"));
+    if (!config["description"].IsUndefined()) {
+        auto description_str = get_name(env, config["description"]);
+        SERVICE_DESCRIPTIONW description;
+        description.lpDescription = const_cast<wchar_t*>(description_str.c_str());
+        if (!ChangeServiceConfig2W(service.get(), SERVICE_CONFIG_DESCRIPTION, &description))
+            throw Napi::Error::New(env, error_message("ChangeServiceConfig2W"));
+    }
 }
 
 void sc_create(Napi::CallbackInfo& info) {
@@ -245,7 +254,9 @@ void sc_create(Napi::CallbackInfo& info) {
             nullptr :
             get_name(env, config["loadOrderGroup"]).c_str(),
         nullptr, // no tag identifier 
-        nullptr, // dependencies 
+        config["dependencies"].IsUndefined() ?
+            nullptr :
+            array_to_double_null_string(env, config["dependencies"].As<Napi::Array>()).c_str(),
         config["serviceStartName"].IsUndefined() ?
             nullptr :
             get_name(env, config["serviceStartName"]).c_str(),
@@ -255,6 +266,13 @@ void sc_create(Napi::CallbackInfo& info) {
     ));
     if (!service)
         throw Napi::Error::New(env, error_message("CreateService"));
+    if (!config["description"].IsUndefined()) {
+        auto description_str = get_name(env, config["description"]);
+        SERVICE_DESCRIPTIONW description;
+        description.lpDescription = const_cast<wchar_t*>(description_str.c_str());
+        if (!ChangeServiceConfig2W(service.get(), SERVICE_CONFIG_DESCRIPTION, &description))
+            throw Napi::Error::New(env, error_message("ChangeServiceConfig2W"));
+    }
 }
 
 void sc_remove(Napi::CallbackInfo& info) {

@@ -9,6 +9,16 @@ std::wstring get_name(const Napi::Env& env, const Napi::Value& val) {
     else
         throw Napi::TypeError::New(env, "String argument required");
 }
+    
+std::wstring array_to_double_null_string(const Napi::Env& env, const Napi::Array& array) {
+    std::wstring result;
+    for (uint32_t i=0; i<array.Length(); ++i) {
+        result += get_name(env, array[i]);
+        result += std::wstring::value_type(0);
+    }
+    result += std::wstring::value_type(0);
+    return result;
+}
 
 std::string error_message(const char* prefix)
 {

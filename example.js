@@ -21,6 +21,8 @@ async function create () {
     service.create(name, {
         displayName,
         binaryPathName: [process.execPath, ...process.execArgv, __filename].join(' '),
+        dependencies: ['Winmgmt'],
+        description: `${displayName} Test Service Description`,
     });
 }
 
