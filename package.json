@@ -1,6 +1,6 @@
 {
   "name": "win32-service",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Minimal bindings to run Node.JS as a Windows service",
   "main": "index.js",
   "types": "index.d.ts",
