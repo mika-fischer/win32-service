@@ -5,10 +5,10 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "configure": "node scripts/node-gyp-wrap.js configure",
-    "build": "tsc && node scripts/node-gyp-wrap.js build",
-    "rebuild": "tsc && node scripts/node-gyp-wrap.js rebuild",
-    "install": "node scripts/node-gyp-wrap.js rebuild",
+    "configure": "node -e process.exit(process.platform=='win32') || node-gyp configure",
+    "build": "tsc && node -e process.exit(process.platform=='win32') || node-gyp build",
+    "rebuild": "tsc && node -e process.exit(process.platform=='win32') || node-gyp rebuild",
+    "install": "node -e process.exit(process.platform=='win32') || node-gyp-build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
