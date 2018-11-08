@@ -1,4 +1,4 @@
-const _service = process.platform === 'win32' ? require('./build/Release/service') : {};
+const _service = process.platform === 'win32' ? require('node-gyp-build')(__dirname) : {};
 
 export enum Type {
     KERNEL_DRIVER       = 0x001,
