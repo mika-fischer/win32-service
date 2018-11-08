@@ -274,7 +274,7 @@ export function remove(name: string): void {
 /////////////////////////////////////////////////////////////////////////////
 
 function defaultStopCallback() {
-    setImmediate(() => process.emit('SIGTERM'));
+    setImmediate(() => process.emit('SIGTERM', 'SIGTERM'));
 }
 
 /** Register with Windows Service Control Manager
