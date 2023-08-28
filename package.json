@@ -5,10 +5,10 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "configure": "node -e \"process.exit(process.platform=='win32')\" || node-gyp configure",
-    "build": "tsc && node -e \"process.exit(process.platform=='win32')\" || node-gyp build",
-    "rebuild": "tsc && node -e \"process.exit(process.platform=='win32')\" || node-gyp rebuild",
-    "install": "node -e \"process.exit(process.platform=='win32')\" || node-gyp-build",
+    "configure": "node -e \"process.exit(process.platform=='win32'?1:0)\" || node-gyp configure",
+    "build": "tsc && node -e \"process.exit(process.platform=='win32'?1:0)\" || node-gyp build",
+    "rebuild": "tsc && node -e \"process.exit(process.platform=='win32'?1:0)\" || node-gyp rebuild",
+    "install": "node -e \"process.exit(process.platform=='win32'?1:0)\" || node-gyp-build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
