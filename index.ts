@@ -202,7 +202,7 @@ export function start(name: string): Promise<void> {
  * @param name Name of service
  */
 export function stop(name: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         try {
             assertWindows();
             _service.stop(name, (err?: Error) => {
@@ -285,7 +285,7 @@ export function run(name: string,
                     ignoreError: boolean = false,
                     initCallback?: (...args: any[]) => any,
                     stopCallback: () => any = defaultStopCallback): Promise<any[]|undefined> {
-    return new Promise((resolve, reject) => {
+    return new Promise<any[]|undefined>((resolve, reject) => {
         if (process.platform === 'win32') {
             _service.run(name, (err?: Error, ...args: any[]) => {
                 if (!err && initCallback) {
@@ -297,7 +297,7 @@ export function run(name: string,
             }, stopCallback);
         } else {
             if (ignoreError) {
-                resolve();
+                resolve(undefined);
             } else {
                 reject(platformError());
             }
